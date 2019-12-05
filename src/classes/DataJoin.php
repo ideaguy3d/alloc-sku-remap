@@ -13,7 +13,7 @@ class DataJoin
     /**
      * @var string
      */
-    private $allocOrderFile = 'orders.csv';
+    private $allocOrderFileName;
     /**
      * @var string
      */
@@ -34,17 +34,13 @@ class DataJoin
     /**
      * The constructor will determine if the app is in a local env and
      * set the folder paths
+     *
+     * @param string $allocFolder
+     * @param string $allocOrderFileName
      */
-    public function __construct() {
-        $isLocal = AppGlobals::isLocalHost();
-        
-        if($isLocal) {
-            $this->allocFolder = 'C:\xampp\htdocs\rs-comauto\app\allocadence-csv';
-        }
-        // we're in a production env so try to use a relative path
-        else {
-            $this->allocFolder = '.\app\allocadence-csv';
-        }
+    public function __construct(string $allocFolder, string $allocOrderFileName) {
+        $this->allocFolder = $allocFolder;
+        $this->allocOrderFileName = $allocOrderFileName;
     }
     
     /**
@@ -52,7 +48,7 @@ class DataJoin
      *
      * @param $jobBoardData array - the data from ComAutoComplex
      *
-     * @return array
+     * @return array - it'll return the joined CSV for Accounting & Allocadence data
      */
     public function allocadenceJoin(array $jobBoardData): array {
         $f = $this->findColumnOrder($jobBoardData[0]);
@@ -156,7 +152,7 @@ class DataJoin
         $joinedData[0][$idxAlloc] = 'allocadence_php_info';
         
         // log the prior op
-        AppGlobals::LogComAutoInfo('Allocadence Orders and Inventory array created ~DataJoin.php');
+        AppGlobals::rsLogInfo('Allocadence Orders and Inventory array created ~DataJoin.php');
         
         return $joinedData;
     
@@ -171,7 +167,7 @@ class DataJoin
      *
      * @return array
      */
-    public function findColumnOrder(array $headerRow): array {
+    private function findColumnOrder(array $headerRow): array {
         // header row must be initialized before findColumnOrder
         $this->headerRow = $headerRow;
         

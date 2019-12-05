@@ -463,6 +463,7 @@ class AllocParser
         }
     }
 
+    //TODO: implement app logic
     private function EnvelopeSkuAnalyzer(): array {
         $rsPriceMatrixCosts = [];
 
@@ -470,7 +471,8 @@ class AllocParser
 
         return $rsPriceMatrixCosts;
     }
-
+    
+    //TODO: implement app logic
     private function PaperSkuAnalyzer(): array {
         $rsPriceMatrixCosts = [];
 
@@ -478,7 +480,8 @@ class AllocParser
 
         return $rsPriceMatrixCosts;
     }
-
+    
+    //TODO: implement app logic
     private function SnapPackSkuAnalyzer(): array {
         $rsPriceMatrixCosts = [];
 
@@ -488,8 +491,8 @@ class AllocParser
     }
 
     /**
-     * Fill the missing Job Board:
-     * [papertype,paper_color,envelopepaer,envelopetype,
+     * Fill the missing Job Board fields for:
+     * [papertype,paper_color,envelopepaer,envelopetype,]
      *
      * @param array $jobRec - the current rec being scanned from the csv for accounting
      * @param array $f - the fields for the current job record
@@ -498,7 +501,7 @@ class AllocParser
      * @return array - the re-mapped job board record from the CSV for Accounting
      */
     public static function allocRemap(array $jobRec, array $f, array $allocItems): array {
-        // ENUM for the name of needed field titles
+        // ENUM for the name of needed field titles (enables better code completion)
         $t = new class () // t = title
         {
             public $paperColor = 'paper_color';

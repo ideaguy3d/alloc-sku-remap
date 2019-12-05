@@ -5,32 +5,35 @@
  */
 declare(strict_types=1);
 
+// manually require files so composer auto loading is not needed
 require 'src\interfaces\ICsvParseModel.php';
 require 'src\classes\AppGlobals.php';
 require 'src\classes\CsvParseModel.php';
 require 'src\classes\DataJoin.php';
 require 'src\classes\AllocParser.php';
 
-// variable declarations
-use Redstone\Auto\AppGlobals;
+// namespaces to use
 use Redstone\Auto\CsvParseModel;
 use Redstone\Auto\DataJoin;
 
-$jobBoardAccountingCsvData = null;
-$commissionAuto = null;
+//-- SET THE FOLDER PATHS:
+$ordersCsvFolderPath = 'C:\xampp\htdocs\alloc-sku-remap\csv\allocadence';
+$accountingCsvFolderPath = 'C:\xampp\htdocs\alloc-sku-remap\csv\job-board';
+$joinedDataResultFolderPath = 'C:\xampp\htdocs\alloc-sku-remap\csv\job-board';
 
-$dataJoin = new DataJoin();
+//-- SET THE FILE NAMES:
+$ordersCsvFileName = 'orders.csv';
+$accountingCsvFileName = 'accounting.csv';
+$joinedDataFileName = 'alloc_job-board';
 
-// job board indexes
-$jbi = findColumnOrder($jobBoardData[0]);
+// convert the CSV for Accounting CSV file to an array
+$accountingArray = CsvParseModel::specificCsv2array($accountingCsvFolderPath, $accountingCsvFileName);
 
-// Job Board CSV data joined with Allocadence Orders
-$jobBoardData = $dataJoin->allocadenceJoin($jobBoardData, $jbi);
+// create an instance of the DataJoin class
+$dataJoin = new DataJoin($ordersCsvFolderPath, $ordersCsvFileName);
 
-// variable initializations
-$path2folder = AppGlobals::PathToCommissionCsvFolder();
-$accountingData = CsvParseModel::specificCsv2array($path2folder, AppGlobals::$accounting_csv);
+// Job Board CSV for Accounting data joined with Allocadence Orders
+$allocJobBoardData = $dataJoin->allocadenceJoin($accountingArray);
 
-// export the summed [client] AND [sales_rep] data
-CsvParseModel::export2csv();
-CsvParseModel::export2csv();
+// Export the joined data to a CSV
+CsvParseModel::export2csv($allocJobBoardData, $joinedDataResultFolderPath, $joinedDataFileName);

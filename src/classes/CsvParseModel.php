@@ -1,4 +1,8 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: julius
+ */
 declare(strict_types=1);
 
 namespace Redstone\Auto;
@@ -7,26 +11,6 @@ use Redstone\Auto\Interfaces\ICsvParseModel;
 
 class CsvParseModel implements ICsvParseModel
 {
-    public function __construct() { }
-    
-    public static function getCsvArray(string $path): array {
-        $csvFileFolder = glob("$path/*.csv");
-        $csvFile = $csvFileFolder[0];
-        $csv = [];
-        $count = 0;
-        
-        if(($handle = fopen($csvFile, 'r')) !== false) {
-            while(($data = fgetcsv($handle, 8096, ",")) !== false) {
-                $csv[$count] = $data;
-                ++$count;
-            }
-            fclose($handle);
-        }
-        
-        return $csv;
-    }
-    
-    // THIS IS AN EXACT COPY OF "public static function getCsvArray()"
     public static function csv2array(string $path): array {
         $csvFileFolder = glob("$path\*.csv");
         $csvFile = $csvFileFolder[0];
@@ -69,11 +53,9 @@ class CsvParseModel implements ICsvParseModel
         return $csv;
     }
     
-    public static function export2csv(
-        array $dataSet, string $exportPath, string $name2giveFile
-    ): string {
+    public static function export2csv(array $dataSet, string $exportPath, string $name2giveFile): string {
         $name2giveFile = str_replace(' ', '-', strtolower($name2giveFile));
-        $csvName = 'comauto_' . $name2giveFile . '.csv';
+        $csvName = 'rs_' . $name2giveFile . '.csv';
         $exportPath = $exportPath . DIRECTORY_SEPARATOR . $csvName;
         $outputFile = fopen($exportPath, 'w') or exit("mheta - unable to open $exportPath");
         

@@ -11,20 +11,6 @@ namespace Redstone\Auto\Interfaces;
 interface ICsvParseModel
 {
     /**
-     * "This is an EXACT copy of csv2array(), but I'm keeping it just
-     * in case older scripts are referencing it"
-     *
-     * Get the CSV file, transform it to an array, then return it.
-     * should be a full path e.g. "C:\foo\bar\file.csv"
-     * this would be used if there was a local array
-     *
-     * @param string $path
-     *
-     * @return array
-     */
-    public static function getCsvArray(string $path): array;
-    
-    /**
      * Get the CSV file, transform it to an array, then return it.
      *
      * 1 - Should be a full path to a folder e.g. "C:\foo\bar\csv_folder"
