@@ -15,12 +15,28 @@ class AppGlobals
      * @return string
      */
     public static function rsLogInfo(string $info): string {
-        $filePath = '.\_logs';
+        
+    
+        $handle = null;
+        $newLines = "\n\r\n\r";
+        $info = substr_replace($info, $newLines, 0, 0);
+        $info = substr_replace($info, $newLines, strlen($info), 0);
+    
+        // append all logs by day to the same file
+        $date = getdate();
+        $logDay = "\COM_AUTO_LOG - $date[month] $date[mday], $date[year].txt";
+        $filePath = "\_logs" . $logDay;
+        
+        // method & line
+        $ml = __METHOD__ . " Line " . __LINE__;
         
         try {
+            if(!is_writable($filePath) || !is_readable($filePath)) {
+                throw new \Exception("PHP does not have permission to $filePath. ~$ml");
+            }
             $handle = fopen($filePath, 'a') or false;
             if($handle === false) {
-                throw new \Exception("file $filePath FAILED to open >:(");
+                throw new \Exception("file $filePath FAILED to open");
             }
             fwrite($handle, $info);
         }
@@ -28,7 +44,8 @@ class AppGlobals
             // $m for message
             $m = $e->getMessage() . " | ";
             $m .= "File $filePath could not be created ~";
-            $m .= __METHOD__ . " Line " . __LINE__;
+            $m .= $ml;
+            echo $m;
             return $m;
         }
         finally {
@@ -39,4 +56,5 @@ class AppGlobals
         return 'success';
         
     } // END OF: LogComAutoInfo()
+    
 }

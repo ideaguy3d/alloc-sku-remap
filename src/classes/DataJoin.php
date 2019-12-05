@@ -61,7 +61,7 @@ class DataJoin
         $i_ordSpecial = 69;
         
         //TODO: set some exception handlers to check hardcoded indexes
-        $allocOrdersData = CsvParseModel::specificCsv2array($this->allocFolder, $this->allocOrderFile);
+        $allocOrdersData = CsvParseModel::specificCsv2array($this->allocFolder, $this->allocOrderFileName);
         $allocOrdersDataHash = [];
         
         // OUTER-LOOP_1 hashes the allocadence order data by job board id

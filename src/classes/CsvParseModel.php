@@ -57,7 +57,7 @@ class CsvParseModel implements ICsvParseModel
         $name2giveFile = str_replace(' ', '-', strtolower($name2giveFile));
         $csvName = 'rs_' . $name2giveFile . '.csv';
         $exportPath = $exportPath . DIRECTORY_SEPARATOR . $csvName;
-        $outputFile = fopen($exportPath, 'w') or exit("mheta - unable to open $exportPath");
+        $outputFile = fopen($exportPath, 'w') or exit("unable to open $exportPath");
         
         foreach($dataSet as $value) {
             if(is_array($value)) {

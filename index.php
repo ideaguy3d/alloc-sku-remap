@@ -19,7 +19,7 @@ use Redstone\Auto\DataJoin;
 //-- SET THE FOLDER PATHS:
 $ordersCsvFolderPath = 'C:\xampp\htdocs\alloc-sku-remap\csv\allocadence';
 $accountingCsvFolderPath = 'C:\xampp\htdocs\alloc-sku-remap\csv\job-board';
-$joinedDataResultFolderPath = 'C:\xampp\htdocs\alloc-sku-remap\csv\job-board';
+$joinedDataResultFolderPath = 'C:\xampp\htdocs\alloc-sku-remap\csv\result-set';
 
 //-- SET THE FILE NAMES:
 $ordersCsvFileName = 'orders.csv';
