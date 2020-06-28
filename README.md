@@ -1,10 +1,12 @@
+## as of 6-27-2020 Using this project to practice PhpSpreadsheet
+
 # The "Allocadence SKU Re-Map" prototype
 
 This project scans the orders.csv downloaded from Allocadence and the accounting.csv downloaded from the Job Board, it 
 
 * aggregates needed fields from orders, 
 * joins the SKU data to the CSV for Accounting data,
- * and attempts to fill empty fields (very duck taped at the moment)
+* and attempts to fill empty fields (very duck taped at the moment)
 
 **PLEASE NOTE:** The code is very "experimental", it's a decent prototype, but there is still so much improvement 
 that can be done and it may have errors that haven't been discovered yet due to lack of thorough testing. 
