@@ -44,8 +44,6 @@ SELECT [facID]
       ,[ahtCono]
   FROM [XBI_RHG].[dbo].[facInfo]
   where (ahtCono<'700' OR ahtcono='901')
-  --and ahtCono in ('104','105','106','107','108','120','112','114')
-  --and ahtCono='104'
   and activeFlag=1
 UNION all
 SELECT
@@ -54,9 +52,8 @@ SELECT
  ,facIDGroupName AS facCode
  ,facIDGroupName AS ahtCono
 FROM dbo.facGroup
-	WHERE
-		facGroupID IN (8012,8005,8006,8007,8008,8014,8013)
-  order by ahtCono
+WHERE facGroupID IN (8012,8005,8006,8007,8008,8014,8013)
+order by ahtCono
 T_SQLx;
 
 $facList = DB::Query($sql);
