@@ -6,16 +6,22 @@ error_reporting(E_ALL);
 ini_set('display_errors', '1');
 
 require 'vendor/autoload.php';
+require 'SccAdpImportCopy.php';
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use Xchive\Scc\SccAdpImportCopy;
 
 $sFile = 'input/c1_PTS_sm.xlsx';
 $lFile = 'input/PTS_Data.xlsx';
 
+$scc = new SccAdpImportCopy();
+$scc->getMostRecentFile();
+$scc->insertIntoStaging();
+
 //dynamicLoad($sFile, $lFile);
 //objectLoad($sFile, $lFile);
-typeLoad($sFile, $lFile);
+//typeLoad($sFile, $lFile);
 
 $debug = 1;
 

@@ -45,11 +45,11 @@ class SccAdpImportCopy
      */
     public $pdo;
     
-    public $dbName = 'XBI_ARENA';
+    public $dbName = 'Arena';
     
-    public $dbHost = 'xcdevdb0.xchive.local';
+    public $dbHost = 'juliusx';
     
-    public $stagingTable = 'pts1_staging';
+    public $stagingTable = 'PTS_Data';
     
     public $fileData = [];
     
@@ -59,11 +59,21 @@ class SccAdpImportCopy
         $this->truncateTable();
     }
     
+    private function echoTime ($start, $end) {
+        $totalTime = (($end - $start)/1e+6)/1000;
+        $totalTimeF = $totalTime;
+        $minTime = '';
+        if($totalTime > 60) {
+            $minTime = ', ' . round(($totalTime / 60), 5);
+        }
+        echo "\n\n time = $totalTimeF secs $minTime \n\n";
+    }
+    
     public function initPdo(): void {
         $this->pdo = new PDO(
             "sqlsrv:Database=$this->dbName;server=$this->dbHost",
             // TOTALLY NOT SECURE... but it's a private repo & a dev db
-            'julius', 'jiha1989'
+            'julius3', 'jiha1989'
         );
         
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -127,8 +137,6 @@ T_SQLx;
             rename($otherFile, $pathToMove);
         }
         
-        $debug = 1;
-        
         try {
             /* -- method 1 --
             $xl = new Xlsx();
@@ -138,7 +146,11 @@ T_SQLx;
             /* -- method 2 -- */
             $reader = IOFactory::createReader('Xlsx');
             $reader->setReadDataOnly(true);
+            
+            $start = hrtime(true);
+            echo "\nload()";
             $xl = $reader->load($createFullPath($mostRecentlyCreatedFileName));
+            $this->echoTime($start, hrtime(true));
             
             $this->fileData = $xl->getActiveSheet()->toArray(
                 null, true, false, false
@@ -152,32 +164,13 @@ T_SQLx;
     
     public function insertIntoStaging() {
         try {
-            // build the query
-            $sql = "insert into [$this->stagingTable] (
-                           [Employee ID]    -- 1
-                          ,[Full Name]      -- 2
-                          ,[Punch In Date]  -- 3
-                          ,[Punch In Time]  -- 4
-                          ,[Punch Out Date] -- 5
-                          ,[Punch Out Time] -- 6
-                          ,[Hours Amount (Hourly value)]  -- 7
-                          ,[Hours Amount (Decimal Value)] -- 8
-                          ,[Pay Group]      -- 9
-                          ,[Company]        -- 10
-                          ,[Location]       -- 11
-                          ,[Payroll Dept]   -- 12
-                          ,[Category]       -- 13
-                          ,[Reports To]     -- 14
-                          ,[Job]            -- 15
-                          ,[Pay Type]       -- 16
-                  ) values";
-            
-            
             // get rid of the header row
             array_shift($this->fileData);
             $batches = array_chunk($this->fileData, 999);
             
             foreach($batches as $batch) {
+                $sql = "insert into [$this->stagingTable] values";
+                
                 // build the query
                 foreach($batch as $fileDatum) {
                     // wrap each value in ""
@@ -192,9 +185,8 @@ T_SQLx;
                 $sql[-1] = ';';
                 $statement = $this->pdo->prepare($sql);
                 $statement->execute();
+                unset($sql);
             }
-            
-            
         }
         catch(\Throwable $e) {
             echo $e->getMessage();
