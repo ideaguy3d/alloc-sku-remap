@@ -13,13 +13,37 @@ use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 $sFile = 'input/c1_PTS_sm.xlsx';
 $lFile = 'input/PTS_Data.xlsx';
 
-dynamicLoad($sFile, $lFile);
-objectLoad($sFile, $lFile);
+//dynamicLoad($sFile, $lFile);
+//objectLoad($sFile, $lFile);
 typeLoad($sFile, $lFile);
+
+$debug = 1;
 
 function echoTime ($start, $end) {
     $totalTime = (($end - $start)/1e+6)/1000;
-    echo "\n\n time = $totalTime secs \n\n";
+    $totalTimeF = $totalTime;
+    $minTime = '';
+    if($totalTime > 60) {
+        $minTime = ', ' . round(($totalTime / 60), 5);
+    }
+    echo "\n\n time = $totalTimeF secs $minTime \n\n";
+}
+
+function loadFiles ($reader, $sFile, $lFile): void {
+    $start = hrtime(true);
+    $sxl = $reader->load($sFile);
+    echoTime($start, hrtime(true));
+    
+    $start = hrtime(true);
+    $lxl = $reader->load($lFile);
+    echo "\n_> load time:";
+    echoTime($start, hrtime(true));
+    
+    $start = hrtime(true);
+    $lxlAr = $lxl->getActiveSheet()->toArray(null, true, false, false);
+    echo "\n_> toArray time:";
+    echoTime($start, hrtime(true));
+    $debug = 1;
 }
 
 /**
@@ -38,7 +62,8 @@ function dynamicLoad($sFile, $lFile) {
         $lxl = IOFactory::load($lFile);
         echoTime($start, hrtime(true));
         // run 1 time = 338.2422553 secs, 5.6 minutes
-        $xlAr = $lxl->getActiveSheet()->toArray(null, true, false, true);
+        $lxlAr = $lxl->getActiveSheet()->toArray(null, true, false, true);
+        $debug = 1;
     }
     catch(\Throwable $e) {
         echo $e->getMessage();
@@ -55,9 +80,18 @@ function dynamicLoad($sFile, $lFile) {
  */
 function objectLoad($sFile, $lFile) {
     try {
+        // reader
         $reader = new Xlsx();
-        $sxl = $reader->load($sFile);
-        $lxl = $reader->load($lFile);
+        $reader->setReadDataOnly(true);
+        
+        echo "\n-------- objectLoad() --------\n";
+        
+        // loader
+        loadFiles($reader, $sFile, $lFile);
+        /*
+            run 1 = 322 secs, w/->setReadDataOnly(true)
+            run 2 = 320 secs, ""
+        */
     }
     catch(\Throwable $e) {
         echo $e->getMessage();
@@ -71,17 +105,29 @@ function objectLoad($sFile, $lFile) {
  */
 function typeLoad($sFile, $lFile) {
     try {
+        // reader
         $fileType = 'Xlsx';
         $reader = IOFactory::createReader($fileType);
+        $reader->setReadDataOnly(true);
+    
+        echo "\n-------- typeLoad() --------\n";
         
-        $start = hrtime(true);
-        $sxl = $reader->load($sFile);
-        echoTime($start, hrtime(true));
+        // loader
+        loadFiles($reader, $sFile, $lFile);
         
+        /*
+            ~ run 1 ~
+            load = 318.0 secs, w/->setReadDataOnly(true)
+            toArray = 88.6 secs
         
+            ~ run 2 ~
+            load = 315.0 secs, w/->getReadDataOnly(true)
+            toArray = 74.2 secs, ""
+        */
     }
     catch(\Throwable $e) {
-    
+        echo $e->getMessage();
+        $debug = 1;
     }
 }
 
